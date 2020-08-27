@@ -13,11 +13,13 @@ orderProducer.start();
 const balconyConsumer = new BalconyConsumer();
 balconyConsumer.start();
 
-app.post('/order', (req, res) => {
+app.post('/order', async (req, res) => {
   try {
-    orderProducer.sendOrder(req.body);
+    const order = { ...req.body, id: `table-${req.body.table}-${Date.now()}` };
+    await orderProducer.sendOrder(order);
     res.send('Order sent!');
   } catch (error) {
+    console.error(error);
     res.send(error);
   }
 });
