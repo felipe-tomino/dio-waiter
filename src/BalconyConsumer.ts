@@ -1,13 +1,13 @@
 import { KafkaConsumer, ConsumerGlobalConfig } from 'node-rdkafka';
 
 const TOPIC_NAME = 'balcony';
-const groupId = 'Waiter';
+const GROUP_ID = 'Waiter';
 
 export default class BalconyConsumer extends KafkaConsumer {
   constructor() {
     const config: ConsumerGlobalConfig = process.env.KAFKA_PASSWORD
       ? {
-        'group.id': groupId,
+        'group.id': GROUP_ID,
         'metadata.broker.list': process.env.KAFKA_BROKER_URI || 'localhost:9092',
         'sasl.username': process.env.KAFKA_USERNAME,
         'sasl.password': process.env.KAFKA_PASSWORD,
@@ -17,7 +17,7 @@ export default class BalconyConsumer extends KafkaConsumer {
         'security.protocol': 'sasl_ssl',
       }
       : {
-        'group.id': groupId,
+        'group.id': GROUP_ID,
         'metadata.broker.list': process.env.KAFKA_BROKER_URI || 'localhost:9092',
       };
     super(config, {});
@@ -27,9 +27,9 @@ export default class BalconyConsumer extends KafkaConsumer {
       .on('ready', () => {
         super.subscribe([topicName]);
         super.consume();
-        console.log(`Started ${groupId} consumer on topic ${topicName}`);
+        console.log(`Started ${GROUP_ID} consumer on topic ${topicName}`);
       })
-      .on('rebalance', () => console.log(`Rebalancing ${groupId} Consumers...`))
+      .on('rebalance', () => console.log(`Rebalancing ${GROUP_ID} Consumers...`))
       .on('data', ({ value }) => {
         const { table, ...rest } = JSON.parse(value.toString());
         console.log(`Delivering table ${table} order: ${JSON.stringify(Object.values(rest)[0])}`)}
