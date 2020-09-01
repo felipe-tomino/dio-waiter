@@ -20,7 +20,7 @@ app.post('/order', async (req, res) => {
       res.status(400).send('You must send Drinks array or Food array!');
     } else {
       await orderProducer.sendOrder(order);
-      res.send('Order sent!');
+      res.send(`Order ${order.id} sent!`);
     }
   } catch (error) {
     console.error(error);
